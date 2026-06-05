@@ -50,7 +50,7 @@ ir = np.arange(delta, nx - delta - 2, 1)
 r_loc = (nx - 2) * jr + ir
 
 # ##### set velocity model ######
-# velocity model 1: Sunken model (ao xian) #
+# velocity model 1: Sunken model #
 c_mat = np.vstack([2 * np.ones(((nz - 3) // 2 + 1, nx - 2)), 2.5* np.ones(((nz - 3) // 2, nx - 2))])
 v_row_loc = math.ceil((nx - 2) / 2)
 v_col_loc = math.ceil((nz - 2) / 3)
@@ -58,8 +58,16 @@ v_row_delta = math.ceil((nx - 2) / 10)
 v_col_delta = math.ceil((nz - 2) / 3)
 c_mat[v_row_loc:v_row_loc + v_row_delta, v_col_loc:v_col_loc + v_col_delta] = 2
 
+#Gaussian smoothing
+sigma_x = 2
+sigma_z = 2
+c_mat_smooth = gaussian_filter(
+    c_mat,
+    sigma=[sigma_z, sigma_x]
+)
+
 # flatten by row
-c_vec = c_mat.reshape(-1, 1)
+c_vec = c_mat_smooth.reshape(-1, 1)
 
 # normalized factor
 I = np.zeros(N)
